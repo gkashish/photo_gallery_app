@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Owner, Album, Photo, Likes
+from .models import Profile, Album, Photo, LikeAlbum, LikePhoto
 
-admin.site.register(Owner)
+admin.site.register(Profile)
 admin.site.register(Album)
 admin.site.register(Photo)
-admin.site.register(Likes)
+admin.site.register(LikePhoto)
+admin.site.register(LikeAlbum)

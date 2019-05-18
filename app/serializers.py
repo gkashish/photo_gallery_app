@@ -1,26 +1,32 @@
 from rest_framework import serializers
-from .models import Owner, Photo, Album, Likes
+from .models import Profile, Photo, Album, LikePhoto, LikeAlbum
 
 
-class OwnerSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Owner
-        fields = ("username", "name")
+        model = Profile
+        fields = ("user", "profile_picture", "gender")
 
 
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
-        fields = ("name", "description", "privacy", "username", "album", "created_on")
+        fields = ("name", "description", "privacy", "user", "album", "created_at")
 
 
 class AlbumSerializer(serializers.ModelSerializer):
     class Meta:
         model = Album
-        fields = ("name", "description", "cover_photo", "privacy", "username", "created_on")
+        fields = ("name", "description", "cover_photo", "privacy", "user", "created_at")
 
 
-class LikesSerializer(serializers.ModelSerializer):
+class LikePhotoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Likes
-        fields = ("username", "album", "song", "liked_by")
+        model = LikePhoto
+        fields = ("user", "liked_to")
+
+
+class LikeAlbumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LikeAlbum
+        fields = ("user", "liked_to")
