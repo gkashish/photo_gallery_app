@@ -1,3 +1,6 @@
+import json
+
+from django.core import serializers
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from rest_framework.response import Response
@@ -7,40 +10,60 @@ from .models import Profile, Album, Photo, LikeAlbum, LikePhoto
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
-from .serializers import LikePhotoSerializer
+from .serializers import AlbumSerializer
 
 
-def re(request):
-    return redirect("/home/")
+# def re(request):
+#     return redirect("/home/")
 
 
 @login_required(login_url='/login/')
-def home(request):
-    print(request.user.username)
-
-    if request.user.username:
-        if User.objects.filter(username=request.user.username).exists():
-            user = User.objects.get(username=request.user.username)
+def my_albums(request):
+    if request.method == "GET":
+        if request.user.username:
+            if User.objects.filter(username=request.user.username).exists():
+                user = User.objects.get(username=request.user.username)
+            else:
+                return HttpResponse("No user exist with this username.")
         else:
             return HttpResponse("No user exist with this username.")
-    else:
-        user = request.user
 
-    albums = Album.objects.filter(user=user)
-    likes, liked = [], []
-    for i in albums:
-        print(i.name)
-        likes.append(len(LikeAlbum.objects.filter(liked_to=i)))
-        if LikeAlbum.objects.filter(liked_to=i).filter(user=request.user):
-            liked.append(True)
-        else:
-            liked.append(False)
-    # top_posts = posts[:10]
-    # top_posts = Post.objects.filter(user=user).order_by('-id')
-    string = "Welcome " + request.user.username
-    print(string)
-    # return render(request, "home.html", {"user": user, "post": top_posts, "Message": string, "like_list": like_list,
-    #                                      "dislike_list": dislike_list, "comments_list": comments_list})
+        albums = Album.objects.filter(user=user)
+        likes, liked = [], []
+        for i in albums:
+            likes.append(len(LikeAlbum.objects.filter(liked_to=i)))
+            if LikeAlbum.objects.filter(liked_to=i).filter(user=request.user):
+                liked.append(True)
+            else:
+                liked.append(False)
+
+        data = {"Albums": serializers.serialize(queryset=albums, format="xml"), "liked": liked, "likes": likes}
+        print(data)
+        return JsonResponse(data)
+    if request.method == "POST":
+        like(request)
+
+
+def all_albums(request):
+    if request.method == "GET":
+        albums = Album.objects.filter(privacy="public")
+        likes, liked = [], []
+        for i in albums:
+            likes.append(len(LikeAlbum.objects.filter(liked_to=i)))
+            if LikeAlbum.objects.filter(liked_to=i).filter(user=request.user):
+                liked.append(True)
+            else:
+                liked.append(False)
+
+        data = {"Albums": serializers.serialize(queryset=albums, format="xml"), "liked": liked, "likes": likes}
+        print(data)
+        return JsonResponse(data)
+    if request.method == "POST":
+        like(request)
+
+
+def create_album(request):
+    print("create_album")
 
 
 @login_required(login_url='/login/')
