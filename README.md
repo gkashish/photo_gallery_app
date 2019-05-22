@@ -30,8 +30,8 @@ Password: l
 ```
 Using OAuth tokens for Authentication.
 
-I started creating the frontend in React, but couldn't complete it due to my Semester Exams.
-After running this, go to [link](https://github.com/gkashish/photo_gallery_app_front_end) to start the front-end (which is yet to be completed).
+## I started creating the frontend in React, but couldn't complete it due to my Semester Exams.
+## After running this, go to [link](https://github.com/gkashish/photo_gallery_app_front_end) to start the front-end (which is yet to be completed).
 
 ## API Table
 This section describes the API made for and utilized by this app.
@@ -39,10 +39,10 @@ This section describes the API made for and utilized by this app.
 ### Albums
 | HTTP Verb | CRUD   | PARAMS(JSON) | RETURNS(JSON)  | ENDPOINT   |
 |-----------|--------|--------------|----------------| -----------|
-| GET       | Read   |              | List of Albums | /album     |
-| PUT       | Update | Album ID     |                | /album     |
-| POST      | Create | Album Object |                | /album     |
-| DELETE    | Delete | Album ID     |                | /album     |
+| GET       | Read   |              | List of Albums | /albums    |
+| PUT       | Update | Album ID     |                | /albums    |
+| POST      | Create | Album Object |                | /albums    |
+| DELETE    | Delete | Album ID     |                | /albums    |
 
 ### Photo 
 | HTTP Verb | CRUD   | PARAMS(JSON) | RETURNS(JSON)  | ENDPOINT                 |
@@ -52,4 +52,10 @@ This section describes the API made for and utilized by this app.
 | POST      | Create | Photo Object |                | albums/<int:pk>/photos/  |
 | DELETE    | Delete | Photo ID     |                | albums/<int:pk>/photos/  |
 
+### Like 
+| HTTP Verb | CRUD   | PARAMS(JSON) | RETURNS(JSON)  | ENDPOINT                 |
+|-----------|--------|--------------|----------------| -------------------------|
+| POST      | Create | Photo/AlbumID|                | like/                    |
+| DELETE    | Delete | Photo/AlbumID|                | like                     |
 
+The deletion is cascaded, if a user is deleted, all their albums are deleted.
