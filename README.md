@@ -30,8 +30,7 @@ Password: l
 ```
 Using OAuth tokens for Authentication.
 
-# I started creating the frontend in React, but couldn't complete it due to my Semester Exams.
-# After running this, go to [link](https://github.com/gkashish/photo_gallery_app_front_end) to start the front-end (which is yet to be completed).
+### I started creating the frontend in React, but couldn't complete it due to my Semester Exams. After running this, go to [link](https://github.com/gkashish/photo_gallery_app_front_end) to start the front-end (which is yet to be completed).
 
 ## API Table
 This section describes the API made for and utilized by this app.
