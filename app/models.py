@@ -5,14 +5,14 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(default="photos/NA/user_default_thumb.jpg", upload_to="photos/")
+    profile_picture = models.ImageField(default=None, upload_to="photos/")
     gender = models.CharField(max_length=15, default="Not Defined")
 
     def __str__(self):
         return self.user.username
+
 
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
@@ -34,7 +34,7 @@ class Album(models.Model):
 
 
 class Photo(models.Model):
-    file = models.ImageField(default="photos/NA/user_default_thumb.jpg",blank=True,upload_to="photos/")
+    file = models.ImageField(default="photos/NA/user_default_thumb.jpg", blank=True, upload_to="photos/")
     description = models.CharField(max_length=1000, null=True)
     privacy = models.CharField(max_length=10, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
