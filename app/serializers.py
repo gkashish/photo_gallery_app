@@ -35,11 +35,32 @@ class PhotoSerializer(serializers.ModelSerializer):
         model = Photo
         fields = ("name", "description", "privacy", "user", "album", "created_at")
 
+    def create(self, validated_data):
+        Photo.objects.create(
+            file=validated_data['picture'],
+            description=validated_data['description'],
+            privacy=validated_data['privacy'],
+            user_id=validated_data['user'],
+            album_id=validated_data['album']
+        )
+        return Response("Success!")
+
 
 class AlbumSerializer(serializers.ModelSerializer):
     class Meta:
         model = Album
-        fields = ("name", "description", "cover_photo", "privacy", "user", "created_at", "likes", "liked")
+        fields = ("name", "description", "cover_photo", "privacy", "user", "created_at")
+
+    def create(self, validated_data):
+        Album.objects.create(
+            name=validated_data['albumName'],
+            privacy=validated_data['privacy'],
+            cover_photo=validated_data['coverPic'],
+            description=validated_data['description'],
+            user_id=validated_data['user']
+        )
+        return Response("Success!")
+
 
 class LikePhotoSerializer(serializers.ModelSerializer):
     class Meta:
