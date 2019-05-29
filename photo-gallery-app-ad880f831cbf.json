@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "photo-gallery-app-e79f8",
+  "private_key_id": "ad880f831cbf72d0007b6997e68497503cb1cfad",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC63cs1OvraAyHc\n37mXtOT0H0VeZvPmp1ge9/0jQGwZC9DGihuxkQxYPCr+5ixvr/goyY/vVZXHwI2d\nwkIOmxtWZmmzWs4fT5sz+XE5juWmW8NAjgQbdixDDNWmZk94TYwc9TTQ0ggnZZ6V\nIyNwLBicY3ygRDuOqTJoz/vC/Va4D3zpyzqsrF0sUQ+QUe5Je/HljOS+JU4ikV/F\nD4e0HGHZqmszgcR7rUsrm/ofTfG5EV2ac171PfEukFaoMD/2BA7+sJDgFXkJ2/uj\n8PRULlgtG2P761tHu4IPktRLjnLzXmFMiye6LwqCKulAYOJVjaWjA2ZQuUZJ6leb\nI2I3o8mRAgMBAAECggEAEHhKeAlYAT2b7zP/z113/YVBD7I6xoZS173rP39m16lJ\nMCqNiM+8Ow2oi3ldisWDdZLYXxOXxTiVMsWjnVZx6SJTKCX1e2CAkSrn3hcYahp1\n4dtyhLocahd4QDeNwxBwrD+3dT1Bzzkfak0jyzfzvlrtadHBvw/uG7tTGQtLqKK7\n6bVgkHJ9ZlCeaJDYUVoy5KVnDBYIdWtA6rozK710bxJ/yyFfu97XUe4XaAAp4oQE\nqfOmMORkLwoXbRlFmfwy1j4sy6EnLsOuc21v9OTFmN8Cn5aocMrQaxqoaCyFC+TM\nMA2M74NtzMj5/+XUaEmugMJljIEkZUHwpD1uyKQSkQKBgQD6oY5QYttNaDrMLNWE\nnQK5du7fQYpZ7LGNlL2I2sWoVJXXpFO45p8vv9sRto22JF1oPYoJaOzUV10XriCM\n7m7+l/hxP3Jhay8kDsUfkRyXM2YLg1DNiZ9wq1uKJtnfDtHRPbOk2DafXZL8mhiM\n2vwl2TbdDXC/fvlCeSUWg3ukSQKBgQC+3o55FQp5HFv9bBhKELN9VWAWatGNsNFp\n1uxA9DwuRF2tF7Wf1Ld0R8f76q5mNUx0HicCZy9Cpe1M6CXC83haXKLTjQGAPUzk\nYtzQkfm41iMlrTtMhIncJTOTz0hwjUes+NDMIPchZaRgatuYAhItxEkgZXp077vv\n3P7tHJzrCQKBgAzLxspP4cZ39diKyXP12DfD3LpFTFz++qmx2GNuV/0aJHRYDXY5\nQBNeBj9HRMDx5lr2GWAVnVHSDAyzdTH80mnpNGQDy0EyCbwbjPDppb4Kf8FCuRNl\nXWCRPyE0jpcW2JuIPO3DpDZKvsBq1aoLXChKiMSMdR8xymQcb0pQ+DURAoGAKq2c\n8doQk3AR6aKH89e0KqwyZhDQdnw49w+FmCiEZFwJDjEk/W4U7z01rFCXWmdEhxpO\n4qyr1p0/aFjoSKUkHiBkkCURVtleHhs1ALYDPp8zELOhdMSWBtGSrNRGgFQ22Khy\nF5Kvb5pInP6Hx39/DRi8uS+3p/oK7eFeZypks/ECgYBl4I7rRd9kn05rJWBGnSiQ\nxK1h2ODnppjCM5YxKcOIBpOecf1vLeEOkCdry8SGcv8AVm/sAWNgxCXalm+6SeFq\nGYYvYr/slcWiphpI+oco7XcDZrkDX5/QMAIOCV96gzeKdML4ZJgvCvpjgtC8NPNo\nQLu1DKDUU3U6ug2HkkwKaA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "gkashish@photo-gallery-app-e79f8.iam.gserviceaccount.com",
+  "client_id": "107371092745367014784",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gkashish%40photo-gallery-app-e79f8.iam.gserviceaccount.com"
+}
