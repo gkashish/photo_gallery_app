@@ -9,6 +9,36 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .serializers import AlbumSerializer, PhotoSerializer, ProfileSerializer
 from rest_framework.authtoken.models import Token
+from google.cloud import storage
+
+
+def upload_pic_to_firebase(file, name):
+    from google.cloud import storage
+    # client = storage.Client()
+    # https://console.cloud.google.com/storage/browser/[bucket-id]/
+    storage_client = storage.Client.from_service_account_json(
+        './photo-gallery-app-ad880f831cbf.json')
+    bucket = storage_client.get_bucket('photo-gallery-app-e79f8.appspot.com')
+    # Then do other things...
+    # blob = bucket.get_blob('remote/path/to/file.txt')
+    # print(blob.download_as_string())
+    # blob.upload_from_string('New contents!')
+    blob2 = bucket.blob(name)
+    blob2.upload_from_file(file)
+
+def get_pic_from_firebase(name):
+    from google.cloud import storage
+    # client = storage.Client()
+    # https://console.cloud.google.com/storage/browser/[bucket-id]/
+    storage_client = storage.Client.from_service_account_json(
+        './photo-gallery-app-ad880f831cbf.json')
+    bucket = storage_client.get_bucket('photo-gallery-app-e79f8.appspot.com')
+    # Then do other things...
+    return bucket.blob("photos/"+name).download_as_string()
+    # print(blob.download_as_string())
+    # blob.upload_from_string('New contents!')
+    # blob2 = bucket.blob(name)
+    # blob2.upload_from_file(file)
 
 
 @api_view(['POST', 'GET', 'PUT'])
@@ -21,7 +51,9 @@ def user(request):
         profile = Profile.objects.get(user_id=user)
         print(request.POST)
         if request.FILES.get('profilePic') is not None:
-            profile.profile_picture.file = request.FILES['profilePic']
+            profile.profile_picture = request.FILES['profilePic']
+            profile.save()
+            upload_pic_to_firebase(profile.profile_picture.file, profile.profile_picture.name)
         profile.gender = request.POST['gender']
         profile.user.first_name = request.POST['firstName']
         profile.user.last_name = request.POST['lastName']
@@ -45,6 +77,7 @@ def user(request):
             gender = 'undisclosed'
         else:
             gender = profile.gender
+
         if cover_photo != '':
             cover_photo = "http://127.0.0.1:8000/api/pro/" + cover_photo
         json = {'firstName': profile.user.first_name, 'lastName': profile.user.last_name, 'gender': gender,
@@ -54,20 +87,22 @@ def user(request):
 
 @api_view(['GET'])
 def cover_pho(request, name):
-    obj = Album.objects.get(cover_photo="photos/" + name)
-    return HttpResponse(obj.cover_photo.file, content_type="image/*")
+    # obj = Album.objects.get(cover_photo="photos/" + name)
+    # return HttpResponse(obj.cover_photo.file, content_type="image/*")
+    return HttpResponse(get_pic_from_firebase(name), content_type="image/*")
 
 
 @api_view(['GET'])
 def album_pho(request, name):
     obj = Photo.objects.get(file="photos/" + name)
-    return HttpResponse(obj.file.file, content_type="image/*")
+    return HttpResponse(get_pic_from_firebase(name), content_type="image/*")
 
 
 @api_view(['GET'])
 def profile_pho(request, name):
     obj = Profile.objects.get(profile_picture="photos/" + name)
-    return HttpResponse(obj.profile_picture.file, content_type="image/*")
+    # print(get_pic_from_firebase(name))
+    return HttpResponse(get_pic_from_firebase(name), content_type="image/*")
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -100,6 +135,7 @@ def album(request):
     if request.method == "POST":
         if request.FILES.get('coverPic') is not None:
             image_data = request.FILES['coverPic']
+            # upload_pic_to_firebase(image_data)
         else:
             image_data = None
 
@@ -112,10 +148,12 @@ def album(request):
         print(request.POST)
         alb = Album.objects.get(id=request.POST['albumId'])
         if alb.user_id != user:
-            return HttpResponseForbidden('Not yours to edit')
+            return HttpResponseBadRequest('Not yours to edit')
 
         if request.FILES.get('coverPic') is not None:
             alb.cover_photo = request.FILES['coverPic']
+            alb.save()
+            upload_pic_to_firebase(alb.cover_photo.file, alb.cover_photo.name)
         alb.description = request.POST['description']
         alb.name = request.POST['name']
         alb.privacy = request.POST['privacy']
@@ -134,7 +172,7 @@ def photo(request, album):
         if len(Album.objects.filter(id=album)) == 0:
             return HttpResponseBadRequest("No such album")
         if Album.objects.get(id=album).user_id != user:
-            return HttpResponseForbidden("This album doesn't belong to you")
+            return HttpResponseBadRequest("This album doesn't belong to you")
         if request.FILES.get('picture') is not None:
             image_data = request.FILES['picture']
         else:
@@ -147,7 +185,7 @@ def photo(request, album):
     if request.method == "GET":
         m = Album.objects.get(id=album)
         if m.user_id != user and m.privacy == 'private':
-            return HttpResponseForbidden("You can't access this album")
+            return HttpResponseBadRequest("You can't access this album")
         if m.user_id == user:
             mine = True
         else:
@@ -171,10 +209,12 @@ def photo(request, album):
     if request.method == "PUT":
         alb = Photo.objects.get(id=request.POST['picId'])
         if alb.user_id != user:
-            return HttpResponseForbidden('Not yours to edit')
+            return HttpResponseBadRequest('Not yours to edit')
 
         if request.FILES.get('picture') is not None:
             alb.file = request.FILES['picture']
+            alb.save()
+            upload_pic_to_firebase(alb.file.file, alb.file.name)
         alb.description = request.POST['description']
         alb.privacy = request.POST['privacy']
         alb.save()
@@ -223,7 +263,7 @@ def picture(request, photo):
 
     m = Photo.objects.get(id=photo)
     if m.user_id != user and m.privacy == 'private':
-        return HttpResponseForbidden("You can't access this picture")
+        return HttpResponseBadRequest("You can't access this picture")
     picture = Photo.objects.get(id=photo)
     if m.user_id == user:
         mine = True
@@ -333,7 +373,7 @@ def share_pic(request, photo):
     user = Token.objects.get(key=token[7:]).user_id
     m = Photo.objects.get(id=photo)
     if m.user_id != user and m.privacy == 'private':
-        return HttpResponseForbidden("You can't access this album")
+        return HttpResponseBadRequest("You can't access this album")
     if m.privacy == 'private':
         m.privacy = 'link_sharing'
         m.save()
@@ -348,7 +388,7 @@ def share_album(request, album):
     user = Token.objects.get(key=token[7:]).user_id
     m = Album.objects.get(id=album)
     if m.user_id != user and m.privacy == 'private':
-        return HttpResponseForbidden("You can't access this album")
+        return HttpResponseBadRequest("You can't access this album")
     if m.privacy == 'private':
         m.privacy = 'link_sharing'
         m.save()
