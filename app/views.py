@@ -11,6 +11,47 @@ from .serializers import AlbumSerializer, PhotoSerializer, ProfileSerializer
 from rest_framework.authtoken.models import Token
 
 
+@api_view(['POST', 'GET', 'PUT'])
+def user(request):
+    token = request.META.get('HTTP_AUTHORIZATION')
+    if len(Token.objects.filter(key=token[7:])) == 0:
+        return HttpResponseForbidden("Login Again")
+    user = Token.objects.get(key=token[7:]).user_id
+    if request.method == "PUT":
+        profile = Profile.objects.get(user_id=user)
+        print(request.POST)
+        if request.FILES.get('profilePic') is not None:
+            profile.profile_picture.file = request.FILES['profilePic']
+        profile.gender = request.POST['gender']
+        profile.user.first_name = request.POST['firstName']
+        profile.user.last_name = request.POST['lastName']
+        if request.POST['password'] != '':
+            profile.user.set_password(request.POST['password'])
+        profile.user.save()
+        profile.save()
+        return Response("done")
+        # register_data = {'firstName': request.POST['firstName'], 'lastName': request.POST['lastName'],
+        #                  'gender': request.POST['gender'], 'username': request.POST['username'],
+        #                  'password': request.POST['password'], 'profilePic': image_data}
+        # print(register_data)
+        #
+        # profile_serializer = ProfileSerializer()
+        # return profile_serializer.create(register_data)
+
+    if request.method == "GET":
+        profile = Profile.objects.get(user_id=user)
+        cover_photo = profile.profile_picture.name
+        if profile.gender == 'Not Defined':
+            gender = 'undisclosed'
+        else:
+            gender = profile.gender
+        if cover_photo != '':
+            cover_photo = "http://127.0.0.1:8000/api/pro/" + cover_photo
+        json = {'firstName': profile.user.first_name, 'lastName': profile.user.last_name, 'gender': gender,
+                'profilePic': cover_photo}
+        return Response(json)
+
+
 @api_view(['GET'])
 def cover_pho(request, name):
     obj = Album.objects.get(cover_photo="photos/" + name)
@@ -21,6 +62,12 @@ def cover_pho(request, name):
 def album_pho(request, name):
     obj = Photo.objects.get(file="photos/" + name)
     return HttpResponse(obj.file.file, content_type="image/*")
+
+
+@api_view(['GET'])
+def profile_pho(request, name):
+    obj = Profile.objects.get(profile_picture="photos/" + name)
+    return HttpResponse(obj.profile_picture.file, content_type="image/*")
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -47,7 +94,7 @@ def album(request):
                 cover_photo = "http://127.0.0.1:8000/api/" + cover_photo
             albums_json.append(
                 {'id': i.id, 'name': name, 'description': description, 'likes': likes,
-                 'liked': liked, 'createdAt': created_at, 'coverPic': cover_photo, 'mine': True})
+                 'liked': liked, 'createdAt': created_at, 'coverPic': cover_photo, 'mine': True, 'privacy': i.privacy})
         return Response(albums_json)
 
     if request.method == "POST":
@@ -62,7 +109,18 @@ def album(request):
         return album_serializer.create(register_data)
 
     if request.method == "PUT":
-        print("PUT")
+        print(request.POST)
+        alb = Album.objects.get(id=request.POST['albumId'])
+        if alb.user_id != user:
+            return HttpResponseForbidden('Not yours to edit')
+
+        if request.FILES.get('coverPic') is not None:
+            alb.cover_photo = request.FILES['coverPic']
+        alb.description = request.POST['description']
+        alb.name = request.POST['name']
+        alb.privacy = request.POST['privacy']
+        alb.save()
+        return Response("done")
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -111,7 +169,16 @@ def photo(request, album):
         return Response(pictures_json)
 
     if request.method == "PUT":
-        print("Put photo")
+        alb = Photo.objects.get(id=request.POST['picId'])
+        if alb.user_id != user:
+            return HttpResponseForbidden('Not yours to edit')
+
+        if request.FILES.get('picture') is not None:
+            alb.file = request.FILES['picture']
+        alb.description = request.POST['description']
+        alb.privacy = request.POST['privacy']
+        alb.save()
+        return Response("done")
 
 
 @api_view(['GET'])
@@ -172,7 +239,8 @@ def picture(request, photo):
 
     cover_photo = "http://127.0.0.1:8000/api/pics/" + picture.file.name
     picture_json = {'id': picture.id, 'description': description, 'likes': likes,
-                    'liked': liked, 'createdAt': created_at, 'picture': cover_photo, 'mine': mine}
+                    'liked': liked, 'createdAt': created_at, 'picture': cover_photo, 'mine': mine,
+                    'privacy': picture.privacy}
     # ss = Ser(albums, many=True)
     print(picture_json)
     return Response(picture_json, content_type="image/*")
@@ -235,10 +303,10 @@ def delete_user(request):
     if len(Token.objects.filter(key=token[7:])) == 0:
         return HttpResponseForbidden("Login Again")
     uid = Token.objects.get(key=token[7:]).user_id
-    try:
-        Profile.objects.get(user_id=uid).delete()
-    finally:
-        return Response("done")
+    print(uid)
+    User.objects.get(id=uid).delete()
+
+    return Response("done")
 
 
 @login_required(login_url='/login/')
@@ -255,6 +323,36 @@ def upload(request):
     else:
         album_name = request.POST["album_name"]
         Album.objects.create(name=album_name, description=description, privacy=privacy, user=user, cover_photo=photo)
+
+
+@api_view(['GET'])
+def share_pic(request, photo):
+    token = request.META.get('HTTP_AUTHORIZATION')
+    if len(Token.objects.filter(key=token[7:])) == 0:
+        return HttpResponseForbidden("Login Again")
+    user = Token.objects.get(key=token[7:]).user_id
+    m = Photo.objects.get(id=photo)
+    if m.user_id != user and m.privacy == 'private':
+        return HttpResponseForbidden("You can't access this album")
+    if m.privacy == 'private':
+        m.privacy = 'link_sharing'
+        m.save()
+    return Response("Okay")
+
+
+@api_view(['GET'])
+def share_album(request, album):
+    token = request.META.get('HTTP_AUTHORIZATION')
+    if len(Token.objects.filter(key=token[7:])) == 0:
+        return HttpResponseForbidden("Login Again")
+    user = Token.objects.get(key=token[7:]).user_id
+    m = Album.objects.get(id=album)
+    if m.user_id != user and m.privacy == 'private':
+        return HttpResponseForbidden("You can't access this album")
+    if m.privacy == 'private':
+        m.privacy = 'link_sharing'
+        m.save()
+    return Response("Okay")
 
 
 @api_view(['POST'])
