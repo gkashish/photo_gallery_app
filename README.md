@@ -25,6 +25,6 @@ Password: hello
 ```
 Using OAuth tokens for Authentication.
 
-### After running this, go to [link](hhttps://github.com/gkashish/photo-gallery-app-frontend) to launch the frontend.
+## After running this, go to [link](https://github.com/gkashish/photo-gallery-app-frontend) to launch the frontend.
 
 The deletion is cascaded, if a user is deleted, all their albums are deleted and if an album is deleted all its photos are deleted.
