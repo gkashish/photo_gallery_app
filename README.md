@@ -23,7 +23,7 @@ The admin username and password is
 Username: cchef
 Password: hello
 ```
-Using OAuth tokens for Authentication.
+Using token based authentication.
 
 ## After running this, go to [link](https://github.com/gkashish/photo-gallery-app-frontend) to launch the frontend.
 
