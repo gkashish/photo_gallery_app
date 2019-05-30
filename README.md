@@ -1,60 +1,30 @@
 # CodeChef Photo Gallery
 Backend of photo gallery app made for CodeChef Summer Internship 2019.
+## The application is hosted at [link](https://gkashish.github.io/photo-gallery-app-frontend/). The backend is hosted on heroku, frontend is hosted as github pages, and the storage service used is Google Firebase storage.
 
 ## How to Run the Code?
 This section describes how the app can be viewed in action.
 
-* Step 1: Download the virtual environment virenv.tar.xz present in the repository.
+* Step 1: Clone the repository, open terminal inside the folder and install the requirements by using:
 
-* Step 2: Go to folder containing the extracted file and activate the environment by using
+* Step 2: Install the requirements
 ```
-source virenv/Scripts/activate
+pip install requirements.txt
 ```
-* Step 3: Install other requirements
+* Step 3: Run the server
 ```
-pip3 install django-extra-fields
-pip3 install django-cors-headers
-pip3 install -U django-oauth-toolkit
-```
-* Step 4: Run the server
-```
-python3 manage.py runserver
+python manage.py runserver
 ```
 Once the application is running, go to [link](http://127.0.0.1:8000/admin/).
 All the functions can be performed using Django's Admin Portal.
 
-The dummy account's username and password is  
+The admin username and password is  
 ```
 Username: cchef
-Password: l
+Password: hello
 ```
 Using OAuth tokens for Authentication.
 
-### I started creating the frontend in React, but couldn't complete it due to my Semester Exams. After running this, go to [link](https://github.com/gkashish/photo_gallery_app_front_end) to start the front-end (which is yet to be completed).
+### After running this, go to [link](hhttps://github.com/gkashish/photo-gallery-app-frontend) to launch the frontend.
 
-## API Table
-This section describes the API made for and utilized by this app.
-
-### Albums
-| HTTP Verb | CRUD   | PARAMS(JSON) | RETURNS(JSON)  | ENDPOINT   |
-|-----------|--------|--------------|----------------| -----------|
-| GET       | Read   |              | List of Albums | /albums    |
-| PUT       | Update | Album ID     |                | /albums    |
-| POST      | Create | Album Object |                | /albums    |
-| DELETE    | Delete | Album ID     |                | /albums    |
-
-### Photo 
-| HTTP Verb | CRUD   | PARAMS(JSON) | RETURNS(JSON)  | ENDPOINT                 |
-|-----------|--------|--------------|----------------| -------------------------|
-| GET       | Read   |              | List of Photos | albums/<int:pk>/photos/  |
-| PUT       | Update | Photo ID     |                | albums/<int:pk>/addphoto/|
-| POST      | Create | Photo Object |                | albums/<int:pk>/photos/  |
-| DELETE    | Delete | Photo ID     |                | albums/<int:pk>/photos/  |
-
-### Like 
-| HTTP Verb | CRUD   | PARAMS(JSON) | RETURNS(JSON)  | ENDPOINT                 |
-|-----------|--------|--------------|----------------| -------------------------|
-| POST      | Create | Photo/AlbumID|                | like/                    |
-| DELETE    | Delete | Photo/AlbumID|                | like                     |
-
-The deletion is cascaded, if a user is deleted, all their albums are deleted.
+The deletion is cascaded, if a user is deleted, all their albums are deleted and if an album is deleted all its photos are deleted.
