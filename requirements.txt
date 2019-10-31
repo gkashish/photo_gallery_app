@@ -23,7 +23,7 @@ lxml==4.2.1
 Markdown==2.6.11
 oauthlib==2.1.0
 parsel==1.4.0
-Pillow==5.1.0
+Pillow==6.2.0
 pipenv==2018.5.18
 psycopg2==2.7.4
 pyasn1==0.4.3
